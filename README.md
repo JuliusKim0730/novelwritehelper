@@ -1,6 +1,6 @@
 # Novel Write Helper
 
-소설 쓰기를 도와주는 웹 애플리케이션입니다.
+소설 쓰기를 도와주는 웹 애플리케이션입니다. 기획 스펙은 [docs/SPEC.md](docs/SPEC.md)에 있습니다.
 
 ## 주요 기능
 
@@ -25,7 +25,7 @@
 
 ## 기술 스택
 
-- **Frontend**: React, Material-UI
+- **Frontend**: React, Material-UI, Vite
 - **Backend**: Firebase Firestore
 - **Styling**: Emotion CSS-in-JS
 
@@ -59,9 +59,20 @@ const firebaseConfig = {
 };
 ```
 
-4. 개발 서버 실행
+4. 개발 서버 실행 (http://localhost:3000)
 ```bash
-npm start
+npm run dev
+```
+
+5. 테스트와 빌드
+```bash
+npm test
+npm run build   # build/ 에 결과물 생성
+```
+
+6. 보안 규칙 배포 (`firestore.rules` 변경 시)
+```bash
+firebase deploy --only firestore:rules
 ```
 
 ## Firebase Firestore 컬렉션 구조
