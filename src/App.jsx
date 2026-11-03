@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Box, AppBar, Toolbar, Typography, IconButton, Drawer, Button } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, IconButton, Drawer } from '@mui/material';
 import { Edit as EditIcon, People as PeopleIcon, PushPin as PinIcon, Close as CloseIcon } from '@mui/icons-material';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
@@ -11,7 +11,6 @@ import EditorModal from './components/EditorModal';
 import FloatingWindow from './components/FloatingWindow';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
-import { migrateExistingData } from './utils/migrateData';
 import './App.css';
 
 const theme = createTheme({
@@ -51,23 +50,6 @@ function App() {
       setUser(currentUser);
       setLoading(false);
       console.log('인증 상태 변경:', currentUser?.email);
-      
-      // meangyun0729@gmail.com 계정으로 로그인 시 데이터 마이그레이션 실행
-      if (currentUser && currentUser.email === 'meangyun0729@gmail.com') {
-        try {
-          const migrationKey = 'migration_completed_' + currentUser.uid;
-          const migrationCompleted = localStorage.getItem(migrationKey);
-          
-          if (!migrationCompleted) {
-            console.log('기존 데이터를 사용자 계정에 연결 중...');
-            await migrateExistingData(currentUser.uid);
-            localStorage.setItem(migrationKey, 'true');
-            console.log('데이터 마이그레이션 완료');
-          }
-        } catch (error) {
-          console.error('데이터 마이그레이션 실패:', error);
-        }
-      }
     });
 
     return () => unsubscribe();
@@ -235,27 +217,6 @@ function App() {
               <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center' }}>
                 Novel Write Helper
               </Typography>
-              {/* 임시 마이그레이션 버튼 */}
-              {user && user.email === 'meangyun0729@gmail.com' && (
-                <Button 
-                  color="inherit" 
-                  size="small"
-                  onClick={async () => {
-                    try {
-                      console.log('수동 마이그레이션 시작...');
-                      await migrateExistingData(user.uid);
-                      alert('마이그레이션 완료! 페이지를 새로고침하세요.');
-                      window.location.reload();
-                    } catch (error) {
-                      console.error('마이그레이션 오류:', error);
-                      alert('마이그레이션 중 오류가 발생했습니다.');
-                    }
-                  }}
-                  sx={{ mr: 1 }}
-                >
-                  데이터 연결
-                </Button>
-              )}
               <IconButton
                 size="large"
                 edge="end"

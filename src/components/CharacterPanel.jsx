@@ -41,20 +41,9 @@ const CharacterPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
 
   const loadCharacters = async () => {
     try {
-      // 사용자별 데이터 조회 또는 기존 데이터 (userId가 없는 것들)
       const charactersRef = collection(db, 'characters');
-      let q;
-      
-      // meangyun0729@gmail.com의 UID와 비교하여 기존 데이터 처리
-      const targetEmail = 'meangyun0729@gmail.com';
-      
-      if (userId) {
-        // 현재 사용자의 데이터만 조회
-        q = query(charactersRef, where('userId', '==', userId));
-      } else {
-        // userId가 없으면 전체 조회
-        q = charactersRef;
-      }
+      if (!userId) return;
+      const q = query(charactersRef, where('userId', '==', userId));
       
       const querySnapshot = await getDocs(q);
       const charactersData = [];
