@@ -26,6 +26,7 @@ import {
 } from '@mui/icons-material';
 import { collection, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
+import ExportButton from './ExportButton';
 import { getWordCount, getWordCountStatus } from '../utils/wordCountUtils';
 
 const ChapterList = ({ onOpenEditor, userId }) => {
@@ -198,6 +199,10 @@ const ChapterList = ({ onOpenEditor, userId }) => {
             </ToggleButton>
           </ToggleButtonGroup>
           
+          <ExportButton userId={userId} kind="chapters">
+            소설 작성본 전체 다운로드 (.md)
+          </ExportButton>
+
           <Button
             variant="contained"
             startIcon={<AddIcon />}

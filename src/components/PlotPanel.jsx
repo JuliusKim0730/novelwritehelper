@@ -29,6 +29,7 @@ import {
 } from '@mui/icons-material';
 import { collection, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
+import ExportButton from './ExportButton';
 
 const PlotPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
   const [plots, setPlots] = useState([]);
@@ -173,6 +174,10 @@ const PlotPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
       >
         새 플롯 추가
       </Button>
+
+      <ExportButton userId={userId} kind="plots" fullWidth sx={{ mb: 2 }}>
+        플롯 전체 다운로드 (.md)
+      </ExportButton>
 
       {/* 정렬 토글 버튼 */}
       <Box display="flex" justifyContent="center" mb={2}>
