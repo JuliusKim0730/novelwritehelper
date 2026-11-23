@@ -8,15 +8,40 @@ import {
   Typography,
   Divider,
   ListItemIcon,
-  ListItemText
+  ListItemText,
+  Snackbar,
+  Alert
 } from '@mui/material';
-import { Logout as LogoutIcon, Person as PersonIcon } from '@mui/icons-material';
+import { Logout as LogoutIcon, Person as PersonIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { exportMarkdown } from '../utils/exportMarkdown';
+
+const EXPORT_OPTIONS = [
+  { kind: 'all', label: '전체 내보내기 (.md)' },
+  { kind: 'plots', label: '플롯만 (.md)' },
+  { kind: 'characters', label: '캐릭터만 (.md)' },
+  { kind: 'chapters', label: '본문만 (.md)' },
+];
 
 const UserProfile = ({ user }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState('');
+
+  const handleExport = async (kind) => {
+    handleClose();
+    setExporting(true);
+    try {
+      await exportMarkdown(user?.uid, kind);
+    } catch (error) {
+      console.error('내보내기 실패:', error);
+      setExportError('내보내기 중 오류가 발생했습니다.');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -108,6 +133,22 @@ const UserProfile = ({ user }) => {
           <ListItemText>프로필</ListItemText>
         </MenuItem>
         
+        <Divider />
+
+        <Typography variant="caption" color="text.secondary" sx={{ px: 2, display: 'block' }}>
+          Markdown으로 내보내기
+        </Typography>
+        {EXPORT_OPTIONS.map(({ kind, label }) => (
+          <MenuItem key={kind} onClick={() => handleExport(kind)} disabled={exporting}>
+            <ListItemIcon>
+              <DownloadIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{label}</ListItemText>
+          </MenuItem>
+        ))}
+
+        <Divider />
+
         <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
@@ -115,6 +156,17 @@ const UserProfile = ({ user }) => {
           <ListItemText>로그아웃</ListItemText>
         </MenuItem>
       </Menu>
+
+      <Snackbar
+        open={Boolean(exportError)}
+        autoHideDuration={4000}
+        onClose={() => setExportError('')}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert severity="error" onClose={() => setExportError('')}>
+          {exportError}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
