@@ -46,15 +46,8 @@ const PlotPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
   const loadPlots = async () => {
     try {
       const plotsRef = collection(db, 'plots');
-      let q;
-      
-      if (userId) {
-        // 현재 사용자의 데이터만 조회
-        q = query(plotsRef, where('userId', '==', userId));
-      } else {
-        // userId가 없으면 전체 조회
-        q = plotsRef;
-      }
+      if (!userId) return;
+      const q = query(plotsRef, where('userId', '==', userId));
       
       const querySnapshot = await getDocs(q);
       const plotsData = [];

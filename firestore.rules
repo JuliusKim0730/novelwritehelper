@@ -1,0 +1,22 @@
+rules_version = '2';
+
+// 각 문서는 userId 필드의 주인만 읽고 쓸 수 있다. 나머지 경로는 모두 거부.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+    function ownsExisting() {
+      return signedIn() && resource.data.userId == request.auth.uid;
+    }
+    function ownsIncoming() {
+      return signedIn() && request.resource.data.userId == request.auth.uid;
+    }
+
+    match /{collection}/{docId} {
+      allow read, delete: if collection in ['chapters', 'plots', 'characters'] && ownsExisting();
+      allow create: if collection in ['chapters', 'plots', 'characters'] && ownsIncoming();
+      allow update: if collection in ['chapters', 'plots', 'characters'] && ownsExisting() && ownsIncoming();
+    }
+  }
+}
