@@ -26,6 +26,7 @@ import {
 } from '@mui/icons-material';
 import { collection, getDocs, deleteDoc, doc, query, where } from 'firebase/firestore';
 import { db } from '../firebase';
+import ExportButton from './ExportButton';
 
 const CharacterPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
   const [characters, setCharacters] = useState([]);
@@ -140,6 +141,10 @@ const CharacterPanel = ({ onOpenEditor, onOpenFloating, userId }) => {
       >
         새 캐릭터 추가
       </Button>
+
+      <ExportButton userId={userId} kind="characters" fullWidth sx={{ mb: 2 }}>
+        캐릭터 전체 다운로드 (.md)
+      </ExportButton>
 
       <Divider sx={{ mb: 2 }} />
 

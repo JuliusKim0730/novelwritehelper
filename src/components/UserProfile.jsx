@@ -18,7 +18,7 @@ import { auth } from '../firebase';
 import { exportMarkdown } from '../utils/exportMarkdown';
 
 const EXPORT_OPTIONS = [
-  { kind: 'all', label: '전체 내보내기 (.md)' },
+  { kind: 'all', label: '플롯+캐릭터+작성본 한 파일로 (.md)' },
   { kind: 'plots', label: '플롯만 (.md)' },
   { kind: 'characters', label: '캐릭터만 (.md)' },
   { kind: 'chapters', label: '본문만 (.md)' },
